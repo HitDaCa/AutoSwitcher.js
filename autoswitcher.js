@@ -21,15 +21,16 @@ function AutoSwitcher()
 
         if (typeof opt === "object") {
             for(var key in opt) {
-
-                var ase = new ASElement();
-                opt[key].parent = _this;
-                
-                ase.init(opt[key])
                 
                 var jItem = $(key);
-                jItem.data("name", key )
+                jItem.data("name", key)
                 
+                var ase = new ASElement();
+                opt[key].parent = _this;
+                opt[key].clickItem = jItem;
+                
+                ase.init(opt[key])
+               
                 // initiate submit handler
                jItem.on("click", function(e) {
                     
@@ -58,6 +59,7 @@ function AutoSwitcher()
     this.addBT1Class = function(src)
     {
         console.log("local function executed");
+        console.log(src);
     }
     
     /**
@@ -153,6 +155,14 @@ function ASElement()
                 _this.set("showStart", false);
             }
             
+            if (opt.hasOwnProperty("activeClass") ) {
+                _this.set("activeClass", opt['activeClass']);
+            } 
+            
+            if (opt.hasOwnProperty("clickItem") ) {
+                _this.set("clickItem", opt['clickItem']);
+            } 
+
             if (opt.hasOwnProperty("elements") ) {
                 _this.set("elements", opt['elements']);
             } else {
@@ -194,6 +204,10 @@ function ASElement()
             $(elArray[item]).show();
         }
         
+        if (_this.get("activeClass") && _this.get("clickItem")) {
+            _this.get("clickItem").addClass(_this.get("activeClass"));
+        }
+        
         if (typeof _this.get("onShowCall") === 'object') {
             
             opt = _this.get("onShowCall");
@@ -227,6 +241,10 @@ function ASElement()
         
         for(var item in elArray) {
             $(elArray[item]).hide(); 
+        }
+        
+        if (_this.get("activeClass") && _this.get("clickItem")) {
+            _this.get("clickItem").removeClass(_this.get("activeClass"));
         }
         
         if (typeof _this.get("onHideCall") === 'object') {
