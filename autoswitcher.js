@@ -21,19 +21,17 @@ function AutoSwitcher()
 
         if (typeof opt === "object") {
             for(var key in opt) {
-                
-                console.log(key);
-                
+
                 var ase = new ASElement();
+                opt[key].parent = _this;
+                
                 ase.init(opt[key])
                 
                 var jItem = $(key);
-                jItem.data( "name", key )
+                jItem.data("name", key )
                 
                 // initiate submit handler
                jItem.on("click", function(e) {
-                    
-                    console.log("clicked " + $(this).data("name"));
                     
                     e.preventDefault();
                     e.stopPropagation();
@@ -51,6 +49,16 @@ function AutoSwitcher()
         _this.startup();
     
     };
+    
+    /**
+     *
+     * test button show call method
+     *
+     */
+    this.addBT1Class = function(src)
+    {
+        console.log("local function executed");
+    }
     
     /**
      *
@@ -134,6 +142,10 @@ function ASElement()
         _this = this;
 
         if (typeof opt === "object") {
+
+            if (opt.hasOwnProperty("parent") ) {
+                _this.set("parent", opt['parent']);
+            }
             
             if (opt.hasOwnProperty("showStart") ) {
                 _this.set("showStart", true);
@@ -146,6 +158,15 @@ function ASElement()
             } else {
                 _this.set("elements", []);
             }
+            
+            if (opt.hasOwnProperty("onShowCall") ) {
+                _this.set("onShowCall", opt['onShowCall']);
+            }
+            
+            if (opt.hasOwnProperty("onHideCall") ) {
+                _this.set("onHideCall", opt['onHideCall']);
+            }
+            
         }
     };
     
@@ -166,10 +187,31 @@ function ASElement()
      */
     this.show = function()
     {
-        var elArray = _this.get("elements");
+        var elArray = _this.get("elements"),
+            opt = {};
         
         for(var item in elArray) {
             $(elArray[item]).show();
+        }
+        
+        if (typeof _this.get("onShowCall") === 'object') {
+            
+            opt = _this.get("onShowCall");
+            
+            if (opt.hasOwnProperty("type") && opt.hasOwnProperty("function")) {
+                
+                if (_this.get("parent") && opt['type'] === "local") {
+                  
+                    _this.get("parent")[opt['function']](_this.get("parent"));
+                    
+                } else if (_this.get("parent") && opt['type'] === "global") {
+                    
+                    if (window[opt['function']]) {
+                        window[opt['function']](_this.get("parent"));
+                    }
+                    
+                }
+            } 
         }
     };
     
@@ -180,11 +222,33 @@ function ASElement()
      */
     this.hide = function()
     {
-        var elArray = _this.get("elements");
+        var elArray = _this.get("elements"),
+            opt = {};
         
         for(var item in elArray) {
             $(elArray[item]).hide(); 
-        }   
+        }
+        
+        if (typeof _this.get("onHideCall") === 'object') {
+            
+            opt = _this.get("onHideCall");
+            
+            if (opt.hasOwnProperty("type") && opt.hasOwnProperty("function")) {
+                
+                if (_this.get("parent") && opt['type'] === "local") {
+                    
+                    _this.get("parent")[opt['function']](_this.get("parent"));
+                    
+                } else if (_this.get("parent") && opt['type'] === "global") {
+                    
+                    if (window[opt['function']]) {
+                        window[opt['function']](_this.get("parent"));
+                    }
+                    
+                }
+            } 
+            
+        }
     };
     
     /**
@@ -209,3 +273,53 @@ function ASElement()
         return _this[name];
     };
 }
+
+
+/**
+     *
+     * test button hide call method
+     *
+     */
+function removeBT1Class(src) {
+    
+    console.log("global function executed");
+    console.log(src); 
+    
+}
+
+$( document ).ready(function() {
+    var switcher = new AutoSwitcher();
+
+    switcher.init({
+        ".button1" : {
+            "showStart" : true,
+            "elements" : [
+                ".showhide1",   
+                "#showhide2"  
+            ],
+            "onShowCall" : {
+                "type" : "local",
+                "function" : "addBT1Class"
+            },
+            "onHideCall" : {
+                "type" : "global",
+                "function" : "removeBT1Class"
+            }
+            
+        },
+        "#button2" : {
+            "elements" : [
+                ".showhide3",   
+                "#showhide4"   
+            ]
+        },
+        "button" : {
+            "elements" : [
+                ".showhide1",   
+                "#showhide2",  
+                ".showhide5",   
+                "#showhide6" 
+            ]
+        }
+    }); 
+});
