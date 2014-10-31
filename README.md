@@ -6,8 +6,19 @@ Create tabbed content on the fly (requires jQuery)
 ##Howto:
 
 ```
-$( document ).ready(function() {
+/**
+     *
+     * test button hide call method
+     *
+     */
+function removeBT1Class(src) {
     
+    console.log("global function executed");
+    console.log(src); 
+    
+}
+
+$( document ).ready(function() {
     var switcher = new AutoSwitcher();
 
     switcher.init({
@@ -16,7 +27,16 @@ $( document ).ready(function() {
             "elements" : [
                 ".showhide1",   
                 "#showhide2"  
-            ]
+            ],
+            "onShowCall" : {
+                "type" : "local",
+                "function" : "addBT1Class"
+            },
+            "onHideCall" : {
+                "type" : "global",
+                "function" : "removeBT1Class"
+            }
+            
         },
         "#button2" : {
             "elements" : [
@@ -33,6 +53,5 @@ $( document ).ready(function() {
             ]
         }
     }); 
-    
 });
 ```
