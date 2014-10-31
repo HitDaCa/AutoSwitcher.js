@@ -7,10 +7,10 @@ Create tabbed content on the fly (requires jQuery)
 
 ```
 /**
-     *
-     * test button hide call method
-     *
-     */
+ *
+ * test button hide call method
+ *
+ */
 function removeBT1Class(src) {
     
     console.log("global function executed");
@@ -28,6 +28,7 @@ $( document ).ready(function() {
                 ".showhide1",   
                 "#showhide2"  
             ],
+            "activeClass" : "active",
             "onShowCall" : {
                 "type" : "local",
                 "function" : "addBT1Class"
@@ -42,7 +43,8 @@ $( document ).ready(function() {
             "elements" : [
                 ".showhide3",   
                 "#showhide4"   
-            ]
+            ],
+            "activeClass" : "active"
         },
         "button" : {
             "elements" : [
@@ -50,8 +52,10 @@ $( document ).ready(function() {
                 "#showhide2",  
                 ".showhide5",   
                 "#showhide6" 
-            ]
+            ],
+            "activeClass" : "active"
         }
     }); 
 });
+
 ```
