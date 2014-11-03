@@ -22,17 +22,17 @@ function AutoSwitcher()
         if (typeof opt === "object") {
             for(var key in opt) {
                 
-                var jItem = $(key);
-                jItem.data("name", key)
+                var trigger = $(key);
+                trigger.data("name", key)
                 
                 var ase = new ASElement();
                 opt[key].parent = _this;
-                opt[key].clickItem = jItem;
+                opt[key].key = key;
                 
                 ase.init(opt[key])
                
                 // initiate submit handler
-               jItem.on("click", function(e) {
+               trigger.on("click", function(e) {
                     
                     e.preventDefault();
                     e.stopPropagation();
@@ -50,17 +50,6 @@ function AutoSwitcher()
         _this.startup();
     
     };
-    
-    /**
-     *
-     * test button show call method
-     *
-     */
-    this.addBT1Class = function(src)
-    {
-        console.log("local function executed");
-        console.log(src);
-    }
     
     /**
      *
@@ -107,7 +96,7 @@ function AutoSwitcher()
             } 
         }
     }
-
+    
     /**
      * Public setter
      *
@@ -142,7 +131,7 @@ function ASElement()
     this.init = function(opt)
     {
         _this = this;
-
+        
         if (typeof opt === "object") {
 
             if (opt.hasOwnProperty("parent") ) {
@@ -159,8 +148,8 @@ function ASElement()
                 _this.set("activeClass", opt['activeClass']);
             } 
             
-            if (opt.hasOwnProperty("clickItem") ) {
-                _this.set("clickItem", opt['clickItem']);
+            if (opt.hasOwnProperty("key") ) {
+                _this.set("trigger", $(opt['key']));
             } 
 
             if (opt.hasOwnProperty("elements") ) {
@@ -204,28 +193,17 @@ function ASElement()
             $(elArray[item]).show();
         }
         
-        if (_this.get("activeClass") && _this.get("clickItem")) {
-            _this.get("clickItem").addClass(_this.get("activeClass"));
+        if (_this.get("activeClass") && _this.get("trigger")) {
+            $(_this.get("trigger")).addClass(_this.get("activeClass"));
         }
         
-        if (typeof _this.get("onShowCall") === 'object') {
+        if (typeof _this.get("onShowCall") === 'string') {
             
-            opt = _this.get("onShowCall");
-            
-            if (opt.hasOwnProperty("type") && opt.hasOwnProperty("function")) {
-                
-                if (_this.get("parent") && opt['type'] === "local") {
-                  
-                    _this.get("parent")[opt['function']](_this.get("parent"));
-                    
-                } else if (_this.get("parent") && opt['type'] === "global") {
-                    
-                    if (window[opt['function']]) {
-                        window[opt['function']](_this.get("parent"));
-                    }
-                    
-                }
-            } 
+            if (_this.get("parent") && _this.get("parent")[_this.get("onShowCall")]) {
+                _this.get("parent")[_this.get("onShowCall")](this.get("trigger"), this.get("parent").get("items"));
+            } else if (window[_this.get("onShowCall")]) {
+                window[_this.get("onShowCall")](this.get("trigger"), this.get("parent").get("items"));
+            }
         }
     };
     
@@ -243,28 +221,17 @@ function ASElement()
             $(elArray[item]).hide(); 
         }
         
-        if (_this.get("activeClass") && _this.get("clickItem")) {
-            _this.get("clickItem").removeClass(_this.get("activeClass"));
+        if (_this.get("activeClass") && _this.get("trigger")) {
+            $(_this.get("trigger")).removeClass(_this.get("activeClass"));
         }
         
-        if (typeof _this.get("onHideCall") === 'object') {
+        if (typeof _this.get("onHideCall") === 'string') {
             
-            opt = _this.get("onHideCall");
-            
-            if (opt.hasOwnProperty("type") && opt.hasOwnProperty("function")) {
-                
-                if (_this.get("parent") && opt['type'] === "local") {
-                    
-                    _this.get("parent")[opt['function']](_this.get("parent"));
-                    
-                } else if (_this.get("parent") && opt['type'] === "global") {
-                    
-                    if (window[opt['function']]) {
-                        window[opt['function']](_this.get("parent"));
-                    }
-                    
-                }
-            } 
+            if (_this.get("parent") && _this.get("parent")[_this.get("onHideCall")]) {
+                _this.get("parent")[_this.get("onHideCall")](this.get("trigger"), this.get("parent").get("items"));
+            } else if (window[_this.get("onHideCall")]) {
+                window[_this.get("onHideCall")](this.get("trigger"), this.get("parent").get("items"));
+            }
             
         }
     };
@@ -291,3 +258,4 @@ function ASElement()
         return _this[name];
     };
 }
+
