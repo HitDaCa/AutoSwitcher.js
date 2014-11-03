@@ -2,7 +2,7 @@
 ===============
 
 Create tabbed content on the fly (requires jQuery)
-(Example: http://jsfiddle.net/cvw9hxb1/32/)
+(Example: http://jsfiddle.net/Hitbox/vo35t6u2/1/)
 
 ##Howto:
 
