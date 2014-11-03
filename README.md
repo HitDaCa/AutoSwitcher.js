@@ -6,21 +6,21 @@ Create tabbed content on the fly (requires jQuery)
 ##Howto:
 
 ```
-/**
- *
- * test button hide call method
- *
- */
-function removeBT1Class(src) {
-    
-    console.log("global function executed");
-    console.log(src); 
-    
-}
-
 $( document ).ready(function() {
     var switcher = new AutoSwitcher();
-
+    
+    switcher.function_a = function(trigger, collection) {
+        console.log("showing");
+        console.log(trigger);
+        console.log(collection);
+    }
+    
+    switcher.function_b = function(trigger, collection) {
+        console.log("hiding");
+        console.log(trigger);
+        console.log(collection);
+    }
+    
     switcher.init({
         ".button1" : {
             "showStart" : true,
@@ -29,14 +29,8 @@ $( document ).ready(function() {
                 "#showhide2"  
             ],
             "activeClass" : "active",
-            "onShowCall" : {
-                "type" : "local",
-                "function" : "addBT1Class"
-            },
-            "onHideCall" : {
-                "type" : "global",
-                "function" : "removeBT1Class"
-            }
+            "onShowCall" : "function_a",
+            "onHideCall" : "function_b"
             
         },
         "#button2" : {
@@ -44,7 +38,8 @@ $( document ).ready(function() {
                 ".showhide3",   
                 "#showhide4"   
             ],
-            "activeClass" : "active"
+            "activeClass" : "active",
+            "onShowCall" : "function_a"
         },
         "button" : {
             "elements" : [
